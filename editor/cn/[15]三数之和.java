@@ -37,10 +37,52 @@
 // Related Topics 数组 双指针 排序 👍 4752 👎 0
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
+              int n = nums.length;
+              //由于要防止重复，需要保证 a 《= b 《= c
+              Arrays.sort(nums);
 
+              List<List<Integer>> ans = new ArrayList<>();
+
+              //第1个数first
+              for (int first = 0; first < n; first++) {
+                  //去重
+                  if(first >0  && nums[first] == nums[first-1]){
+                      continue;
+                  }
+
+                  int target = -nums[first];
+                  //下面是采用双指针求second和third的值
+                  //第3个数third
+                  int third = n -1;
+                  //第2个数 second
+                  for (int second = first + 1; second < n; second++) {
+                      // 需要和上一次枚举的数不相同
+                      if (second > first + 1 && nums[second] == nums[second - 1]) {
+                          continue;
+                      }
+                      // 需要保证 second 的指针在 third 的指针的左侧
+                      while (second < third && nums[second] + nums[third] > target) {
+                          --third;
+                      }
+                      if (second == third) { break; }
+
+                      if (nums[second] + nums[third] == target) {
+                          List<Integer> list = new ArrayList<Integer>();
+                          list.add(nums[first]);
+                          list.add(nums[second]);
+                          list.add(nums[third]);
+                          ans.add(list);
+                      }
+                  }
+              }
+              return ans;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
