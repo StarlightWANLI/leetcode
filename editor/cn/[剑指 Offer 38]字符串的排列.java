@@ -3,7 +3,7 @@ class Solution {
     List<String> res = new LinkedList<String>();
 
     char[] c;
-    //字符串的全排序，采用回溯
+    //字符串的全排序，里面没有重复元素，采用回溯
     public String[] permutation(String s) {
         c = s.toCharArray();
         dfs(0);
