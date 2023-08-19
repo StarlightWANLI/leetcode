@@ -1,0 +1,57 @@
+暴力法能过
+
+* []
+
+```javascript
+var translateNum = function(num) {
+    const str = String(num);
+    const len = str.length;
+    const dfs = function(index){
+        if(index <= 0) return 1;
+        if((str.charAt(index)<"6"&&str.charAt(index-1)==="2")||str.charAt(index-1)==="1") return dfs(index-1)+dfs(index-2);
+        return dfs(index-1);
+    }
+    return dfs(len-1);
+};
+```
+
+递归+哈希表存储=记忆化搜索
+
+* []
+
+```javascript
+/** 记忆化搜索 */
+var translateNum = function(num) {
+    const str = String(num);
+    const len = str.length;
+    const map = new Map()
+    const dfs = function(index){
+        if(index <= 0) return 1;
+        if(map.has(index)) return map.get(index);
+        let res = 0;
+        if((str.charAt(index)<"6"&&str.charAt(index-1)==="2")||str.charAt(index-1)==="1") res = dfs(index-1)+dfs(index-2);
+        else res = dfs(index-1);
+        map.set(index,res);
+        return map.get(index);
+    }
+    return dfs(len-1);
+};
+```
+
+动态规划:爬楼梯的升级版，满足条件才能爬两格。即两个数字凑起来大于等于10且小于26
+
+* []
+
+```javascript
+/** 动态规划 */
+var translateNum = function(num) {
+    let pre = 1,cur=1,str = String(num);
+    const len = str.length;
+    for(let i = 0; i < len; i++){
+        const satisfy = i+1<len&&(str.charAt(i)==="1"||str.charAt(i)==="2"&&str.charAt(i+1)<"6");
+        [pre,cur] = [cur,(satisfy?pre+cur:cur)];
+    }
+    return cur;
+}
+```
+

@@ -1,0 +1,188 @@
+### 方法1 递归
+
+翻译 2163 可以分解成：翻译 2 和剩下的 163 、翻译 21 和剩下的 63
+- 每次都有2种选择：翻译1个数、或2个数
+- 但如果该两位数没有对应的字母，翻译2个数这个选项就需要被砍掉。
+- 指针从左往右扫描，画出下图，2 种选择对应 2 个分支，1 种选择对应 1 个分支。
+
+![image.png](https://pic.leetcode-cn.com/f79e01824ed5315462d76c3d4de898eaccf081ee25a7c78c4320dd0a8e569f94-image.png)
+
+#### 定义递归函数
+
+- dfs 函数求：「当前指针位置到末尾的数字」的翻译方法数。
+- 节点的状态用指针表示，dfs 入口传 0。
+- 如果 指针 和 指针+1 对应的两位数在`[10,25]`内，则可以直译，有两种选择：
+  - 翻译 1 个数，指针走一步，递归调用，返回出剩余数字的翻译方法数。
+  - 翻译 2 个数，指针走两步，递归调用，返回出剩余数字的翻译方法数。
+  - 二者相加，就是当前数字串的翻译方法数。
+- 如果 指针 和 指针+1 对应的两位数不在`[10,  25]`内，则无法直译，只有一个选择：
+  - 翻译 1 个数，指针走一步，递归调用 dfs，返回出剩余子串的翻译方法数。
+
+### 方法1 代码
+
+* []
+
+```js
+const translateNum = (num) => {
+  const str = num.toString();
+
+  const dfs = (str, pointer) => {            // 随着dfs向下，pointer右移
+    if (pointer >= str.length - 1) return 1; // 指针抵达边界和超出边界都返回1
+
+    const temp = Number(str[pointer] + str[pointer + 1]);   // 考察该2位数
+
+    if (temp >= 10 && temp <= 25) {          
+      return dfs(str, pointer + 1) + dfs(str, pointer + 2); // 2个分支的结果相加
+    } else {                                
+      return dfs(str, pointer + 1);          // 返回1个分支的结果
+    }
+  }
+
+  return dfs(str, 0);
+}
+```
+
+#### 存在重复的计算
+
+![image.png](https://pic.leetcode-cn.com/9a4b47c518d60422fc8e73c027481344c614a4709a778a5c3ede52324008debe-image.png)
+- 黄色、蓝色阴影所标注的是重复的子树。
+- 该递归优先遍历左子树，在右侧遇到重复子树时，没有必要重新计算。
+- 计算过的结果用一个备忘录存下来，再遇到就直接拿来用。我们剪去重复的子树：
+
+![image.png](https://pic.leetcode-cn.com/4f7cd5b08871674fc6c2cbeb2ad82c0bdb33247265d7d4690dec652994e897d3-image.png)
+
+### 记忆化递归
+
+- 可以用 map 作备忘录，也可以用数组。创建数组 memo，索引是指针位置，元素是对应子树的返回值。
+- 下图例子，数字的长度 n = 4，memo[3] 和 memo[4] 是已知的，值都为 1，是 base case。
+
+![image.png](https://pic.leetcode-cn.com/608ab2d4c07d496e40f0988a91f256b020b974bdfcc1d3afba43232b0e161381-image.png)
+
+### 方法2 代码
+
+* []
+
+```js
+const translateNum = (num) => {
+  const str = num.toString();
+  const n = str.length;
+
+  const memo = new Array(n);
+  memo[n - 1] = 1;   // 指针临界时的子树的计算结果
+  memo[n] = 1;       // 指针越界时的子树的计算结果
+
+  const dfs = (str, pointer, memo) => {
+    if (memo[pointer]) return memo[pointer]; // 之前存过，直接拿来用
+
+    const temp = Number(str[pointer] + str[pointer + 1]);
+
+    if (temp >= 10 && temp <= 25) {
+      memo[pointer] = dfs(str, pointer + 1, memo) + dfs(str, pointer + 2, memo);
+    } else {
+      memo[pointer] = dfs(str, pointer + 1, memo);
+    }
+
+    return memo[pointer]; // 当前子树的计算结果向上返回
+  };
+
+  return dfs(str, 0, memo);
+}
+```
+
+#### 总结一下记忆化递归
+
+先往 memo 存入两个已知的、处于底部的子树的结果。等 dfs 往下遇到它，就能直接从 memo 中拿出来用。递归的结果从下往上返回的过程中，子树的计算结果不断抄录到 memo 中。本来递归没有记忆计算结果，现在加入了记忆化。
+
+#### 复杂度分析
+
+- 暴力 DFS
+  - time：$O(2^n)$ 。每个节点都要遍历，栈的深度 n  ，n 是数字字符个数
+  - space: O(n) 。栈的深度 n  ，n 是数字字符个数
+- DFS + 备忘录
+  - time：O(n) 。栈的深度 n  ，n 是数字字符个数
+  - space: O(n) 。栈的深度 n  ，n 是数字字符个数
+
+### 方法3 动态规划
+
+#### 动态规划 和 递归 的区别
+
+前两个方法是递归，不断压栈再不断出栈。是自上而下解决问题，等待下面返回上来的结果。动态规划是自下而上解决问题，从已知的 case 出发，存储前面的状态，迭代出最后的结果。动态规划就是想办法不用递归，利用递推关系用“填表格”的方式顺序计算。每个 dp 项的值其实等于一个递归子调用的结果（递归子问题的解）。
+
+#### 定义 $dp[i]$ 、base case：$dp[0]$ 为何为 1
+
+- $dp[i]$ ：翻译前 i 个数的方法数。
+- $dp[0]=1$ ，是为了让边界情况也能满足通式：比如数字 16 ，$dp[2]=2$ 是肯定的，$dp[1]=1$ 也是肯定的。为了让 $dp[2]=dp[0]+dp[1]$ 通式成立，只有让 $dp[0]=1$
+
+![image.png](https://pic.leetcode-cn.com/40af8705f3bdea2c25b1cb871be9c9214c85a927d48b39eeb1606f8edb4ba360-image.png)
+
+#### 需要考察的两位数的位置，容易出错
+
+![image.png](https://pic.leetcode-cn.com/31f32f42f3e1184c8dc43a6c8e61fc0d511a228246ca206336cb347991ab0bba-image.png)
+
+#### 状态转移方程
+
+- 不能直译 $num_{i-2}num_{i-1}$ :    $dp[i]=dp[i-1]$
+- 能直译 $num_{i-2}num_{i-1}$ :   $dp[i]=dp[i-2]+dp[i-1]$
+  ![image.png](https://pic.leetcode-cn.com/5d966350e5ced6835a1cf1bd2de875b8a8104af3d21c1c798ee2a54aa786ec49-image.png)
+
+#### 方法3 代码
+
+* js
+
+```js
+const translateNum = (num) => {
+  const str = num.toString();
+  const n = str.length;
+
+  const dp = new Array(n + 1);
+  dp[0] = 1;
+  dp[1] = 1;
+
+  for (let i = 2; i < n + 1; i++) {
+    const temp = Number(str[i - 2] + str[i - 1]);
+    if (temp >= 10 && temp <= 25) {
+      dp[i] = dp[i - 1] + dp[i - 2];
+    } else {
+      dp[i] = dp[i - 1];
+    }
+  }
+  
+  return dp[n]; // 翻译前n个数的方法数，即翻译整个数字
+}
+```
+
+#### 降维
+
+- 刚才的时间复杂度是O(n)，n 是状态转移的次数，空间复杂度是 O(n)。
+- 你会发现，当前 dp 项只和它前面两项有关，无需用数组存储所有的 dp 项。用两个变量去存这两个状态值，在迭代中更新就好。空间复杂度可以优化到 O(1)。
+
+#### 降维后的代码
+
+* js
+
+```js
+const translateNum = (num) => {
+  const str = num.toString();
+  const n = str.length;
+
+  let prev = 1;
+  let cur = 1;
+
+  for (let i = 2; i < n + 1; i++) {
+    const temp = Number(str[i - 2] + str[i - 1]);
+    if (temp >= 10 && temp <= 25) {
+      const t = cur;    // 缓存上个状态
+      cur = prev + cur; // 当前状态 = 上上个状态 + 上个状态
+      prev = t;         // 更新上上个状态
+    } else {
+      // cur = cur
+      prev = cur;       // 这里容易忘了
+    }
+  } 
+  
+  return cur;
+}
+```
+
+#### 如果有帮助，点个赞鼓励我继续写下去，如果哪里写得不对不好，指出我，我修改完善
+
