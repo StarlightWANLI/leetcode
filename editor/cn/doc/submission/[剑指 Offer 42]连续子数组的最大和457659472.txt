@@ -1,0 +1,48 @@
+class Solution {
+    //求数组最大的子数组之和
+    //典型的最值问题,且涉及从0到多的各种组合情况，采用动态规划
+    //步骤：推导状态转移方程，申明dp数组，初始化dp数组，遍历推导求最值
+    public int maxSubArray(int[] nums) {
+        //方法1：思想大致正常，但动态规划中的值不需要保存这么多
+        //int max = Integer.MIN_VALUE;
+        /*int leng = nums.length;
+        //dp数组记录数组i到j的值之和
+        int [][] dp = new int[leng][leng];
+        //i表示起始位置，j表示终点位置
+        for (int i = 0; i < leng; i++) {
+            for (int j = i; j < leng; j++) {
+                if(j == i){
+                    dp[i][i] = nums[i];
+                }else{
+                    dp[i][j] = dp[i][j-1] + nums[j];
+                }
+                max = Math.max(dp[i][j],max);
+            }
+        }
+        return  max;
+        */
+
+        //状态转移方程：这里的动态规划其实只用关注前面的一个值即可
+        //dp[i]表示以nums[i]结尾的连续子数组的最大和，所以nums[i]的原始值必须参与计算
+        //1、如果 dp[i-1] > 0 ,则 dp[i] = dp[i-1] + nums[i]
+        //2、如果 dp[i-1] < 0 ,则说明前面都是负贡献，不如只计算自己， dp[i] = nums[i]
+        //遍历数组，只累计大于0的值
+        int max = nums[0];
+        //方案二：这里直接采用原数组nums[i]记录前面i个元素的最大值，只累计大于0的值
+        /*for (int i = 1; i < nums.length; i++) {
+            nums[i] = nums[i] + Math.max(nums[i-1],0);
+            max = Math.max(max,nums[i]);
+        }*/
+
+        //方案三：为了不改变数组的原始值，声明pre表示包括当前元素的连续子集合计的最大值，主要是为了保证数组连续
+        int pre = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            pre  = nums[i] + Math.max(pre,0);
+            max = Math.max(max,pre);
+        }
+        return max;
+    }
+}
+
+//runtime:0 ms
+//memory:48.9 MB
