@@ -40,8 +40,26 @@
 
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
+    //求不包括重复元素的最长子字符串的长度
+    //字符串子串的问题：滑动窗口
     public int lengthOfLongestSubstring(String s) {
+        //采用双指针遍历，遇到重复的元素，左指针就跳到左边重复元素的后一位
 
+        //使用map保存每个字符最新的位置
+        Map<Character,Integer> map = new HashMap<Character,Integer>();
+        int res = 0;
+        //滑动窗口：起始下标，j每次都向右移动1位，i只有遇到重复元素且重复元素的位置大于i 才移动到重复元素的前1位
+        int i = 0 ,j = 0;
+        while (j < s.length()) {
+            if(map.containsKey(s.charAt(j)) ) {
+                //注意这里i值的变换条件：一定要满足遇到重复字符串， map.get(s.charAt(j)) + 1 > i ,避免i回头取到比当前i小的值
+                i = Math.max(map.get(s.charAt(j)) + 1,i);
+            }
+            map.put(s.charAt(j),j);
+            res = Math.max(res, j - i + 1);
+            j++;
+        }
+        return res;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
