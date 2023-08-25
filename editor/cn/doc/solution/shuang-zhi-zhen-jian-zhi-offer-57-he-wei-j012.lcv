@@ -1,0 +1,30 @@
+* 
+
+```
+class Solution {
+    // 双指针
+    public int[] twoSum(int[] nums , int target) {
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            // 两指针指向数字的和
+            int sum = nums[left] + nums[right];
+            // 如果找到直接返回
+            if (sum == target) {
+                return new int[] {nums[left] , nums[right]};
+            }               
+            // 如果sum小于target，左指针往右移，继续增大sum
+            if (sum < target) {
+                left++;
+            }               
+            // 如果sum大于target，右指针往左边移，减小sum
+            if (sum > target) {
+                right--;
+            }              
+        }
+        // 如果没找到就返回null
+        return null;
+    }
+}
+```
+

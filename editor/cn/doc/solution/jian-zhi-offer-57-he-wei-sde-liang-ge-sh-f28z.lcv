@@ -1,0 +1,56 @@
+> Problem: [剑指 Offer 57. 和为s的两个数字](https://leetcode.cn/problems/he-wei-sde-liang-ge-shu-zi-lcof/description/)
+
+[TOC]
+
+# 思路：双指针
+
+使用双指针，一个指针指向元素较小的值，一个指针指向元素较大的值。指向较小元素的指针从头向尾遍历，指向较大元素的指针从尾向头遍历。
+- 如果两个指针指向元素的和 `sum == target`，那么这两个元素即为所求；
+- 如果 `sum < target`，移动较小的元素 `i++`，使 `sum` 变大一些；
+- 如果 `sum > target`，移动较大的元素 `j--`，使 `sum` 变小一些。
+
+# Code
+
+* []
+
+```C++
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        for(int i = 0, j = nums.size() - 1; i < j;){
+            int sum = nums[i] + nums[j];
+            if(sum == target) return {nums[i], nums[j]};
+            else if(sum < target) i++;
+            else j--;
+        }
+        return {};
+    }
+};
+```
+
+* []
+
+```Java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        for(int i = 0, j = nums.length - 1; i < j;){
+            int sum = nums[i] + nums[j];
+            if(sum == target) return new int[]{nums[i], nums[j]};
+            else if(sum < target) i++;
+            else j--;
+        }
+        return new int[2];
+    }
+}
+```
+
+# 复杂度分析：
+
+- **时间复杂度**：$O(n)$，其中 `n` 为数组的长度。
+- **空间复杂度**：$O(1)$。
+
+> **放弃一件事很容易，每天能坚持一件事一定很酷，一起每日一题吧！**
+
+**关注我[LeetCode主页](https://leetcode.cn/u/shen-du-rm/) /  [CSDN—力扣专栏](http://t.csdn.cn/kQLJO)，每日更新！**
+
+注： 如有不足，欢迎指正！

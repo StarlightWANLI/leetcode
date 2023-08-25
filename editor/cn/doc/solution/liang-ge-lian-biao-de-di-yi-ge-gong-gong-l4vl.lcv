@@ -1,0 +1,73 @@
+> **点击上方关注「代码随想录」，算法路上不迷路！**
+
+## 思路
+
+简单来说，就是求两个链表交点节点的**指针**。 这里同学们要注意，交点不是数值相等，而是指针相等。
+
+为了方便举例，假设节点元素数值相等，则节点指针相等。
+
+看如下两个链表，目前curA指向链表A的头结点，curB指向链表B的头结点：
+
+![面试题02.07.链表相交_1.png](https://pic.leetcode-cn.com/1598234658-JlosGC-%E9%9D%A2%E8%AF%95%E9%A2%9802.07.%E9%93%BE%E8%A1%A8%E7%9B%B8%E4%BA%A4_1.png)
+
+我们求出两个链表的长度，并求出两个链表长度的差值，然后让curA移动到，和curB 末尾对齐的位置，如图：
+
+![面试题02.07.链表相交_2.png](https://pic.leetcode-cn.com/1598234668-MAyoGk-%E9%9D%A2%E8%AF%95%E9%A2%9802.07.%E9%93%BE%E8%A1%A8%E7%9B%B8%E4%BA%A4_2.png)
+
+此时我们就可以比较curA和curB是否相同，如果不相同，同时向后移动curA和curB，如果遇到curA == curB，则找到焦点。
+
+否则循环退出返回空指针。
+
+## C++代码
+
+* 
+
+```
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode* curA = headA;
+        ListNode* curB = headB;
+        int lenA = 0, lenB = 0;
+        while (curA != NULL) { // 求链表A的长度
+            lenA++;
+            curA = curA->next;
+        }
+        while (curB != NULL) { // 求链表B的长度
+            lenB++;
+            curB = curB->next;
+        }
+        curA = headA;
+        curB = headB;
+        // 让curA为最长链表的头，lenA为其长度
+        if (lenB > lenA) {
+            swap (lenA, lenB);
+            swap (curA, curB);
+        }
+        // 求长度差
+        int gap = lenA - lenB;
+        // 让curA和curB在同一起点上（末尾位置对齐）
+        while (gap--) {
+            curA = curA->next;
+        }
+        // 遍历curA 和 curB，遇到相同则直接返回
+        while (curA != NULL) {
+            if (curA == curB) {
+                return curA;
+            }
+            curA = curA->next;
+            curB = curB->next;
+        }
+        return NULL;
+    }
+};
+```
+
+* 时间复杂度：O(n + m)
+* 空间复杂度：O(1)
+
+**如果感觉题解对你有帮助，不要吝啬给一个👍吧！**
+
+------------
+
+**点击[我的头像](https://github.com/youngyangyang04/leetcode-master)**，查看力扣详细刷题攻略，你会发现相见恨晚！

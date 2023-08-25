@@ -1,0 +1,77 @@
+![图解每日一练.jpg](https://pic.leetcode-cn.com/1615817903-fzmpwZ-%E5%9B%BE%E8%A7%A3%E6%AF%8F%E6%97%A5%E4%B8%80%E7%BB%83.jpg)
+
+---
+
+### 🧠 解题思路
+
+既然是递增数组，那么我们可以利用双指针来做这道题。
+
+1. 指针 $i$ 指向数组首位数字，指针 $j$ 指向数组末位数字。
+2. 若两数字之和大于了 $target$，则指针 $j$ 往左移一位。
+3. 若两数字之和小于了 $target$，则指针 $i$ 往右移一位。
+4. 若两数字之和等于了 $target$，返回结果 $[i, j]$ 即可。
+
+---
+
+### 🎨 图解演示
+
+<![1.jpg](https://pic.leetcode-cn.com/1615939824-qUEtFY-1.jpg),![2.jpg](https://pic.leetcode-cn.com/1615939831-OSwQxq-2.jpg),![3.jpg](https://pic.leetcode-cn.com/1615939833-oAfxaF-3.jpg),![4.jpg](https://pic.leetcode-cn.com/1615939826-YprGKW-4.jpg),![5.jpg](https://pic.leetcode-cn.com/1615939836-eZcxZn-5.jpg)>
+
+---
+
+### 🍭 示例代码
+
+* []
+
+```Javascript
+var twoSum = function(nums, target) {
+    let l = 0, r = nums.length - 1;
+    while(l < r){
+        if(nums[l] + nums[r] === target) return [nums[l], nums[r]];
+        else if (nums[l] + nums[r] > target) r--;
+        else l++;
+    }
+    return null;
+};
+```
+
+* []
+
+```Python
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        i, j = 0, len(nums) - 1
+        while i < j:
+            s = nums[i] + nums[j]
+            if s > target: j -= 1
+            elif s < target: i += 1
+            else: return nums[i], nums[j]
+        return []
+```
+
+* []
+
+```Java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int i = 0, j = nums.length - 1;
+        while(i < j) {
+            int s = nums[i] + nums[j];
+            if(s < target) i++;
+            else if(s > target) j--;
+            else return new int[] { nums[i], nums[j] };
+        }
+        return new int[0];
+    }
+}
+```
+
+---
+
+### 转身挥手
+
+嘿，少年，做图不易，留下个赞或评论再走吧！谢啦~ 💐
+
+差点忘了，祝你牛年大吉 🐮 ，AC 和 Offer 📑 多多益善~
+
+⛲⛲⛲ 期待下次再见~

@@ -1,0 +1,60 @@
+### 解题思路
+
+相当于双指针：
+![image.png](https://pic.leetcode-cn.com/1626830769-PetyRB-image.png)
+
+### 代码
+
+* []
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+ //浪漫爱情故事
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode boy = headA;
+        ListNode girl = headB;
+        while(girl != boy){
+            boy = boy != null ? boy.next : headB;     //如果boy走完他这条路便去走女孩那条路
+            girl = girl != null ? girl.next : headA;  //如果girl走完自己的路便去走男孩那条路
+        }
+        return boy;
+    }
+}
+```
+
+* []
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode *boy = headA;
+        ListNode *girl = headB;
+        while(girl != boy){
+            boy = boy != NULL ? boy->next : headB;     //如果boy走完他这条路便去走女孩那条路
+            girl = girl != NULL ? girl->next : headA;  //如果girl走完自己的路便去走男孩那条路
+        }
+        return boy;
+    }
+};
+```
+

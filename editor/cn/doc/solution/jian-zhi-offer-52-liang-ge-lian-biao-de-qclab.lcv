@@ -1,0 +1,61 @@
+## 先后指针
+
+* C++
+
+```C++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        if (headA == NULL || headB == NULL)
+            return NULL;
+
+        // 先确认两个链表的长度
+        int len_a = 0, len_b = 0;
+        ListNode *ptr_a = headA, *ptr_b = headB;
+        while (ptr_a != NULL) {
+            ptr_a = ptr_a->next;
+            len_a++;
+        }
+        while (ptr_b != NULL) {
+            ptr_b = ptr_b->next;
+            len_b++;
+        }
+        
+        // 让更长的链表上的指针先走，
+        ptr_a = headA, ptr_b = headB;
+        if (len_a > len_b) {
+            // 链表 headA 更长，ptr_a 先走一段 len_a - len_b
+            int diff = len_a - len_b;
+            while (diff > 0) {
+                ptr_a = ptr_a->next;
+                diff--;
+            }
+        }
+        else {
+            int diff = len_b - len_a;
+            while (diff > 0) {
+                ptr_b = ptr_b->next;
+                diff--;
+            }
+        }
+
+        // 现在 headA 和 headB 剩下未遍历的部分是等长的
+        // 如果存在存在公共节点，那么必然在这部分中
+        while (ptr_a != ptr_b) {
+            ptr_a = ptr_a->next;
+            ptr_b = ptr_b->next;
+        }
+
+        return ptr_a;
+    }
+};
+```
+
